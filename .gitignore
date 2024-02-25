@@ -1,3 +1,11 @@
+# Environmental Variables
+.env
+
+# Test scripts and stuff
+.dev-tools
+db.sql
+.curl
+
 # Logs
 logs
 *.log
