@@ -1,5 +1,5 @@
 const login = async(username, password)=>{
-    return await (await fetch('/api/dashboard/login',{
+    return (await fetch('/api/dashboard/login',{
         method:'POST',
         body: JSON.stringify({
             username,
@@ -9,17 +9,33 @@ const login = async(username, password)=>{
 }
 
 const logout = async(username, password)=>{
-    return await (await fetch('/api/dashboard/logout',{
+    return (await fetch('/api/dashboard/logout',{
         method:'POST',
         headers: {'Content-type': 'application/json'}})).json()
 }
 
 const createBlogPost = async(title, details) => {
-    return await (await fetch('/api/blog/posts',{
+    return (await fetch('/api/blog/posts',{
         method:'POST',
         body: JSON.stringify({
             title,
             details
         }),
+        headers: {'Content-type': 'application/json'}})).json()
+}
+
+const updateBlogPost = async(title, details,pid) => {
+    return (await fetch(`/api/blog/post/${pid}`,{
+        method:'PUT',
+        body: JSON.stringify({
+            title,
+            details
+        }),
+        headers: {'Content-type': 'application/json'}})).json()
+}
+
+const deleteBlogPost = async(pid) => {
+    return (await fetch(`/api/blog/post/${pid}`,{
+        method:'DELETE',
         headers: {'Content-type': 'application/json'}})).json()
 }

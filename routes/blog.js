@@ -18,32 +18,21 @@ const blogController = require('../controllers/blogController')
 ////////////////////////////////////////////////////////////////////////////////
 
 // Default route -> Redirect to posts
-router.get('/', function(req, res, next) {
-    res.redirect('/api/blog/posts');
-});
+router.get('/', (req, res, next) => res.redirect('/api/blog/posts'));
 
 // READ all posts
-router.get('/posts', function(req, res, next) {
-    res.status(501).json({msg: 'To be implemented: GET /posts'})
-});
-
-// CREATE a post
-router.post('/posts', blogController.create_post);
+router.get('/posts', blogController.read_posts); // TODO: Limit number of posts / pagination, filter posts, sort posts in query?
 
 ////////////////////////////////////////////////////////////////////////////////
 
+// CREATE a post
+router.post('/posts', blogController.create_post);
 // READ single post
-router.get('/post/:pid', function(req, res, next) {
-    res.status(501).json({msg: 'To be implemented: GET /post/<postID>'})
-});
+router.get('/post/:pid', blogController.read_post);
 // UPDATE single post (with a patch)
-router.patch('/post/:pid', checkLogin, function(req, res, next) {
-    res.status(501).json({msg: 'To be implemented: PATCH /post/<postID>'})
-});
+router.put('/post/:pid', blogController.update_post);
 // DELETE single post (with a patch)
-router.delete('/post/:pid', checkLogin, function(req, res, next) {
-    res.status(501).json({msg: 'To be implemented: DELETE /post/<postID>'})
-});
+router.delete('/post/:pid', blogController.delete_post);
 
 ////////////////////////////////////////////////////////////////////////////////
 
