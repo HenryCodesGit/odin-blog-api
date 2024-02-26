@@ -10,7 +10,7 @@ function initialize(app, secret, db_uri){
         saveUninitialized: true,
         store: new PostgresqlStore({conString: db_uri}),
         cookie: {
-            maxAge: 1000 * 60 * 5
+            maxAge: 1000 * 60 * 60 // One hour session
         }
     }));
 

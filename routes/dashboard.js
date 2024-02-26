@@ -7,8 +7,7 @@ const asyncHandler = require('express-async-handler');
 
 // To validate form results
 // TODO: validation and also password encrypting
-const { body, validationResult } = require('express-validator');
-const bcrypt = require('bcryptjs');
+const { body } = require('express-validator');
 const passport = require('passport');
 
 // GET Returns differently if logged in
@@ -19,25 +18,28 @@ router.get('/', function(req, res, next) {
 });
 
 // POST for logging in
-router.post('/login',  asyncHandler(async (req, res, next) => {
-
-  // TODO: Ignore if already logged in
-
-  await passport.authenticate('local', (err, user, info)=>{
-    //Send error to handler if login problems or anything else
-    if(err) next(err);
-
-    //Set the user info in the session
-    req.login(user, () => res.status(201).json({msg: 'login successful', user: user.username}));
-  })(req,res,next);
-}));
+router.post('/login',[
+  body('username').escape(), //Sanitize the username just in case
+  body('password').escape(), //Sanitize the password just in case
+  asyncHandler(async (req, res, next) => {
+    //Redirect if already logged in
+    if(req.user) return res.redirect('/api/dashboard');
+  
+    await passport.authenticate('local', (err, user, info)=>{
+      //Send error to handler if login problems or anything else
+      if(err) next(err);
+  
+      //Set the user info in the session
+      req.login(user, () => res.status(201).json({msg: 'login successful', user: user.username}));
+    })(req,res,next);
+  })
+]);
 
 // POST for logging out
 router.post('/logout',  asyncHandler(async (req, res, next) => {
   req.logout(async (err) => {
     if(err) return next(err);
-    console.log('Redirecting');
-    res.redirect('/api/dashboard');
+    res.json({msg: 'logged out successfully'});
   });
 }));
 

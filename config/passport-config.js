@@ -11,7 +11,7 @@ async function verifyFunction (username, password, done) {
          if (!user) return done(null, false, { message: "Incorrect username or password" });
 
         // Check password
-        const passMatch = user.password === password // TODO: bcrypt await bcrypt.compare(password, user.password)
+        const passMatch = bcrypt.compare(password, user.password)
         if (!passMatch) return done(null, false, { message: "Incorrect username or password" });
         
         //No errors? Return the user

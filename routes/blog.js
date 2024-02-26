@@ -12,6 +12,9 @@ const checkLogin = require('../middleware/checkLogin-middleware');
 const { body, validationResult } = require('express-validator');
 const { create } = require('domain');
 
+// Controllers
+const blogController = require('../controllers/blogController')
+
 ////////////////////////////////////////////////////////////////////////////////
 
 // Default route -> Redirect to posts
@@ -24,15 +27,14 @@ router.get('/posts', function(req, res, next) {
     res.status(501).json({msg: 'To be implemented: GET /posts'})
 });
 
+// CREATE a post
+router.post('/posts', blogController.create_post);
+
 ////////////////////////////////////////////////////////////////////////////////
 
 // READ single post
 router.get('/post/:pid', function(req, res, next) {
     res.status(501).json({msg: 'To be implemented: GET /post/<postID>'})
-});
-// CREATE single post
-router.post('/post/:pid', checkLogin, function(req, res, next) {
-    res.status(501).json({msg: 'To be implemented: POST /post/<postID>'})
 });
 // UPDATE single post (with a patch)
 router.patch('/post/:pid', checkLogin, function(req, res, next) {
