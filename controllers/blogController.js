@@ -80,6 +80,7 @@ exports.read_post = [
 
         //Return the post id too in case front-end needs to use it for something
         if(!post) return next(createError(404));
+        console.log(post);
 
         res.status(200).json({msg: 'Found post', details: {
             title: post.title,
@@ -261,15 +262,22 @@ exports.delete_comment = [
     })
 ]
 
-// GET ALL comments
+// GET ALL comments for a post
 // TODO: Limit number of posts / pagination, filter posts, sort posts in query?
-exports.read_comments = asyncHandler(async function (req,res,next){
-    //Destructure the result into the 'post' variable, because that's all we care about. Give it default value of 'undefined' in case the await fails.
-    const {rows: comment} = await db.query('SELECT * FROM comment')
-        .catch((err) => { return next(createError(500, 'Error fetching comments from database')) }) || { rows: undefined };
-    
-    if(!comment) return next(createError(404));
-    
-    //Return the post id too in case front-end needs to use it for something
-    res.status(200).json({msg:'Found all comments', details: comment})
-});
+exports.read_comments = [
+    param('pid', 'Invalid parameter format')
+    .trim()
+    .isString()
+    .notEmpty()
+    .escape(),
+    asyncHandler(async function (req,res,next){
+        //Destructure the result into the 'post' variable, because that's all we care about. Give it default value of 'undefined' in case the await fails.
+        const {rows: comment} = await db.query('SELECT * FROM comment WHERE post_id = $1',[req.params.pid])
+            .catch((err) => { return next(createError(500, 'Error fetching comments from database')) }) || { rows: undefined };
+        
+        if(!comment || !comment.length) return next(createError(404));
+        
+        //Return the post id too in case front-end needs to use it for something
+        res.status(200).json({msg:'Found all comments', details: comment})
+    })
+];
