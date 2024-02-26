@@ -44,3 +44,22 @@ UPDATE post
 SET --ANYTHING CAN GO HERE
 WHERE --ANYTHING CAN GO HERE
 RETURNING *;
+
+-------------------------------
+
+CREATE TABLE comment(
+    cid SERIAL PRIMARY KEY,
+    details TEXT,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    post_id INT NOT NULL,
+    FOREIGN KEY(post_id)
+        REFERENCES post(pid)
+        ON UPDATE CASCADE --If the primary key for some reason updates in parent table, it gets updated here too
+        ON DELETE CASCADE --If the parent is deleted, the comments get deleted with it
+);
+
+-- QUERY TO UPDATE ANY POSTS:
+UPDATE comment
+SET --ANYTHING CAN GO HERE
+WHERE --ANYTHING CAN GO HERE
+RETURNING *;

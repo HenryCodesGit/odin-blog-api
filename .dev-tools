@@ -14,8 +14,8 @@ const logout = async(username, password)=>{
         headers: {'Content-type': 'application/json'}})).json()
 }
 
-const createBlogPost = async(title, details) => {
-    return (await fetch('/api/blog/posts',{
+const createPost = async(title, details) => {
+    return (await fetch('/api/blog/post',{
         method:'POST',
         body: JSON.stringify({
             title,
@@ -24,7 +24,7 @@ const createBlogPost = async(title, details) => {
         headers: {'Content-type': 'application/json'}})).json()
 }
 
-const updateBlogPost = async(title, details,pid) => {
+const updatePost = async(title, details,pid) => {
     return (await fetch(`/api/blog/post/${pid}`,{
         method:'PUT',
         body: JSON.stringify({
@@ -34,8 +34,15 @@ const updateBlogPost = async(title, details,pid) => {
         headers: {'Content-type': 'application/json'}})).json()
 }
 
-const deleteBlogPost = async(pid) => {
+const deletePost = async(pid) => {
     return (await fetch(`/api/blog/post/${pid}`,{
         method:'DELETE',
+        headers: {'Content-type': 'application/json'}})).json()
+}
+
+const createCommment = async(pid, details) => {
+    return (await fetch(`/api/blog/post/${pid}/comment`,{
+        method:'POST',
+        body: JSON.stringify({details}),
         headers: {'Content-type': 'application/json'}})).json()
 }

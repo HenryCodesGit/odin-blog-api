@@ -17,16 +17,13 @@ const blogController = require('../controllers/blogController')
 
 ////////////////////////////////////////////////////////////////////////////////
 
-// Default route -> Redirect to posts
+// Default route. Redirect
 router.get('/', (req, res, next) => res.redirect('/api/blog/posts'));
-
-// READ all posts
-router.get('/posts', blogController.read_posts); // TODO: Limit number of posts / pagination, filter posts, sort posts in query?
 
 ////////////////////////////////////////////////////////////////////////////////
 
 // CREATE a post
-router.post('/posts', blogController.create_post);
+router.post('/post', blogController.create_post);
 // READ single post
 router.get('/post/:pid', blogController.read_post);
 // UPDATE single post (with a patch)
@@ -34,32 +31,27 @@ router.put('/post/:pid', blogController.update_post);
 // DELETE single post (with a patch)
 router.delete('/post/:pid', blogController.delete_post);
 
-////////////////////////////////////////////////////////////////////////////////
+// READ all posts
+router.get('/posts', blogController.read_posts); // TODO: Limit number of posts / pagination, filter posts, sort posts in query?
 
-// READ all comments for a post
-router.get('/post/:pid/comments', function(req, res, next) {
-    res.status(501).json({msg: 'To be implemented: GET /post/<postID>/comments'})
-});
 
 ////////////////////////////////////////////////////////////////////////////////
-
-// READ single comment for a post (is this.. needed?)
-router.get('/post/:pid/comment/:cid', function(req, res, next) {
-    res.status(501).json({msg: 'To be implemented: GET /post/<postID>/comments/<commentID>'})
-});
 
 // CREATE single comment for a post
-router.post('/post/:pid/comment/:cid', function(req, res, next) {
-    res.status(501).json({msg: 'To be implemented: POST /post/<postID>/comments/<commentID>'})
-});
+router.post('/post/:pid/comment',blogController.create_comment);
+
+// READ single comment for a post (is this.. needed?)
+router.get('/post/:pid/comment/:cid', blogController.read_comment);
 
 // UPDATE single comment for a post
-router.patch('/post/:pid/comment/:cid', function(req, res, next) { res.next(create(405,'Operation not allowed'))});
-router.put('/post/:pid/comment/:cid', function(req, res, next) {res.next(create(405,'Operation not allowed'))});
+router.put('/post/:pid/comment/:cid', (req,res,next)=>res.next(create(405,'Operation not allowed')));
 
 // DELETE single comment for a post
-router.delete('/post/:pid/comment/:cid', checkLogin, function(req, res, next) {
-    res.status(501).json({msg: 'To be implemented: GET /post/<postID>/comments/<commentID>'})
-});
+router.delete('/post/:pid/comment/:cid', blogController.delete_comment);
+
+// READ all comments for a post
+router.get('/post/:pid/comments', blogController.read_comments);
+
+////////////////////////////////////////////////////////////////////////////////
 
 module.exports = router;
