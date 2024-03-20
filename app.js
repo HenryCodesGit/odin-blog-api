@@ -40,6 +40,9 @@ const blogRouter = require('./routes/blog');
 
 const app = express();
 
+//Setting stuff for when hosting on fly io
+app.set('trust proxy', true)
+
 //Starting cors
 const cors = require('cors');
 const corsOptions = {

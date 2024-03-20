@@ -13,7 +13,7 @@ const createError = require('http-errors');
 
 // TODO: make 'db-config' have a static var that is accessible by all files that import it. 
 // Initialize db=config buy doing something like.. db-config.config(), but only once when the app is started.
-const db = makePool(process.env.POSTGRES_USER, process.env.POSTGRES_PW,process.env.POSTGRES_DB);
+const db = makePool(process.env.POSTGRES_USER, process.env.POSTGRES_PW,process.env.POSTGRES_DB, process.env.POSTGRES_HOST);
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -75,7 +75,7 @@ exports.read_posts = [
         
         // Destructure the result into the 'post' variable, because that's all we care about. Give it default value of 'undefined' in case the await fails.
         const {rows: post} = await db.query(`SELECT pid, title, created_at, updated_at, ispublished FROM post WHERE pid <= ((SELECT MAX(pid) from post) - $1) ${findPublished}ORDER BY pid DESC LIMIT $2`,[start,limit])
-            .catch((err) => { return next(createError(500, 'Error fetching posts from database')) }) || { rows: undefined };
+            .catch((err) => { console.log(err); return next(createError(500, 'Error fetching posts from database')) }) || { rows: undefined };
 
 
         const findPublished2 = (req.user) ? '' : "WHERE ispublished = 'true'"
