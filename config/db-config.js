@@ -5,12 +5,12 @@ const Pool = require('pg').Pool;
 // TODO: make 'db-config' have a static var that is accessible by all files that import it. 
 // Initialize db=config buy doing something like.. db-config.config(), but only once when the app is started.
 
-const makePool = (user, password, database) => {
+const makePool = (user, password, database, host) => {
     return new Pool({
         user,
         password,
         database,
-        host: "localhost",
+        host,
         port: 5432,
     }); 
 }

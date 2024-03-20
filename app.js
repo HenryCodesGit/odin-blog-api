@@ -10,6 +10,7 @@ if(process.env.NODE_ENV === 'development') {
 }
 
 const DB_USER = process.env.POSTGRES_USER;
+const DB_HOST = process.env.POSTGRES_HOST;
 const DB_PW = process.env.POSTGRES_PW;
 const DB_NAME = process.env.POSTGRES_DB;
 const DB_URI = process.env.POSTGRES_URI;
@@ -49,7 +50,7 @@ app.use(cors(corsOptions));
 
 // Initialize the db
 // Note: Be sure to start the db in terminal before running app as well.
-const db = dbConfig.makePool(DB_USER, DB_PW, DB_NAME)
+const db = dbConfig.makePool(DB_USER, DB_PW, DB_NAME,DB_HOST)
 
 topLevelErrors.initialize(app);
 sessionConfig.initialize(app,SESSION_SECRET,DB_URI);

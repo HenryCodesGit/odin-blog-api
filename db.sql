@@ -22,7 +22,7 @@ CREATE TABLE post(
     details TEXT,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP ,
-    isPublished BOOLEAN DEFAULT FALSE
+    ispublished BOOLEAN DEFAULT FALSE
     --TODO: Eventually add tags?
 )
 
