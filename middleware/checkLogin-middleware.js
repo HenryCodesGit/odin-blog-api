@@ -11,7 +11,8 @@ const createError = require("http-errors")
 
 function checkLogin (req, res, next){
     const err = (req.user) ? null : createError(403,'Not authorized without login');
-    return next(err);
+    if(err){ return next(err)}
+    return next();
 }
 
 module.exports = checkLogin;

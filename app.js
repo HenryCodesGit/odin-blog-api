@@ -18,6 +18,7 @@ const SESSION_SECRET = process.env.SESSION_SECRET;
 const express = require('express');
 const createError = require('http-errors');
 
+
 const bcrypt = require('bcryptjs'); //TODO: in future different implementation for hashing than bcrypt. Also figure out how much to salt hashes.
 const passportConfig = require('./config/passport-config');
 const defaultConfig = require('./config/default-config');
@@ -37,6 +38,14 @@ const blogRouter = require('./routes/blog');
 */
 
 const app = express();
+
+//Starting cors
+const cors = require('cors');
+const corsOptions = {
+  origin: true,
+  credentials: true
+}
+app.use(cors(corsOptions));
 
 // Initialize the db
 // Note: Be sure to start the db in terminal before running app as well.
@@ -80,12 +89,10 @@ app.use(function(req, res, next) {
 });
 
 // Error handler
-app.use(function(err, req, res, next) {
+app.use(cors(corsOptions), function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {status: err.status};
-
-  console.log('sending the error');
   
   // Send the error page
   res.status(err.status || 500);
