@@ -28,8 +28,8 @@ exports.create_post = [
     body('details')
         .trim()
         .isString().withMessage('Details must be a string')
-        .notEmpty().withMessage('Details cannot be empty')
-        .escape(),
+        .notEmpty().withMessage('Details cannot be empty'),
+        // .escape(),
     asyncHandler(async function(req, res, next) {
         const validationErrors = validationResult(req);
         if(!validationErrors.isEmpty()){
@@ -131,8 +131,8 @@ exports.update_post = [
         .escape(),
     body('details')
         .trim()
-        .isString().withMessage('Details must be a string')
-        .escape(),
+        .isString().withMessage('Details must be a string'),
+        // .escape(),
     body('ispublished')
         .trim()
         .optional()
