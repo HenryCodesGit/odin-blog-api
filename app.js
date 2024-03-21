@@ -46,8 +46,8 @@ app.set('trust proxy', true)
 
 //Setting up rate limiter
 app.use(rateLimit({
-  windowMs: 15 * 60 * 1000,
-  limit: 100, //100 Requests over 15 minutes should be fine right?
+  windowMs: 60 * 1000, //One minute
+  limit: 60, //Allow on average 1 request per second.
 	standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
 }))
