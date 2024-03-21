@@ -17,6 +17,7 @@ const DB_URI = process.env.POSTGRES_URI;
 const SESSION_SECRET = process.env.SESSION_SECRET;
 
 const express = require('express');
+const { rateLimit } = require('express-rate-limit')
 const createError = require('http-errors');
 
 
@@ -42,6 +43,14 @@ const app = express();
 
 //Setting stuff for when hosting on fly io
 app.set('trust proxy', true)
+
+//Setting up rate limiter
+app.use(rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 100, //100 Requests over 15 minutes should be fine right?
+	standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
+}))
 
 //Starting cors
 const cors = require('cors');
