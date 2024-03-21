@@ -213,17 +213,22 @@ exports.create_comment = [
         .isString()
         .notEmpty()
         .escape(),
+    body('name')
+        .trim()
+        .isString().withMessage('Name must be a string')
+        .notEmpty().withMessage('Name cannot be empty')
+        .escape(),
     body('details')
         .trim()
-        .isString().withMessage('Title must be a string')
-        .notEmpty().withMessage('Title cannot be empty')
+        .isString().withMessage('Comment must be a string')
+        .notEmpty().withMessage('Comment cannot be empty')
         .escape(),
     asyncHandler(async function(req, res, next) {
         const validationErrors = validationResult(req);
         if(!validationErrors.isEmpty()) return res.status(403).json({msg:'POST denied. See errors for details', errors: validationErrors.array().map((error)=>error.msg)})
 
         //Destructure the result into the 'post' variable, because that's all we care about. Give it default value of 'undefined' in case the await fails.
-        const {rows: [post]} = await db.query('INSERT INTO comment(details,post_id) VALUES ($1,$2) RETURNING *',[req.body.details,req.params.pid])
+        const {rows: [post]} = await db.query('INSERT INTO comment(name,details,post_id) VALUES ($1,$2,$3) RETURNING *',[req.body.name,req.body.details,req.params.pid])
             .catch((err) => { 
                 return next(createError(500, 'Error entering comment into database')) }
             ) || { rows: [] };
@@ -235,6 +240,7 @@ exports.create_comment = [
             cid: post.cid,
             post_id: post.post_id,
             created_at: post.created_at,
+            name: post.name,
             details: post.details
         }})
 
@@ -265,6 +271,7 @@ exports.read_comment = [
 
         //Return the comment id too in case front-end needs to use it for something
         res.status(200).json({msg: 'Found post', details: {
+            name: comment.name,
             details: comment.details,
             cid: comment.cid,
             pid: comment.post_id,
@@ -292,55 +299,42 @@ exports.delete_comment = [
         if(!validationErrors.isEmpty()) return res.status(403).json({msg:'DELETE denied. See errors for details', errors: validationErrors.array().map((error)=>error.msg)})
 
         //Destructure the result into the 'post' variable, because that's all we care about. Give it default value of 'undefined' in case the await fails.
-        const {rows: [post]} = await db.query('DELETE FROM comment WHERE cid = $1 AND post_id = $2 RETURNING*',[req.params.cid,req.params.pid])
+        const {rows: [comment]} = await db.query('DELETE FROM comment WHERE cid = $1 AND post_id = $2 RETURNING*',[req.params.cid,req.params.pid])
             .catch((err) => { 
                 return next(createError(500, 'Error deleting comment from database')) }
             ) || { rows: [] };
 
-        if (!post) return next(createError(500, 'Error deleting comment from database'));
+        if (!comment) return next(createError(500, 'Error deleting comment from database'));
 
         //Return the post id too in case front-end needs to use it for something
         res.status(201).json({msg: 'Comment successfully deleted', details: {
-            cid: post.cid,
-            post_id: post.post_id,
-            created_at: post.created_at,
-            details: post.details
+            cid: comment.cid,
+            post_id: comment.post_id,
+            created_at: comment.created_at,
+            name: comment.name,
+            details: comment.details
         }})
 
     })
 ]
 
 // GET ALL comments for a post
-// TODO: Limit number of posts / pagination, filter posts, sort posts in query?
 exports.read_comments = [
     param('pid', 'Invalid parameter format')
         .trim()
         .isString()
         .notEmpty()
         .escape(),
-    query('start')
-        .trim()
-        .isNumeric().withMessage('"start" query must be numeric')
-        .escape(),
-    query('limit')
-        .trim()
-        .isNumeric().withMessage('"limit" query must be numeric')
-        .escape(),
     asyncHandler(async function (req,res,next){
         const validationErrors = validationResult(req);
         if(!validationErrors.isEmpty()) return res.status(403).json({msg:'GET denied. See errors for details', errors: validationErrors.array().map((error)=>error.msg)})
-
-        // Set values of startAt and limit if they are not provided
-        const start = req.query.start || '0';
-        const limit = req.query.limit || '10'; 
         
         //Destructure the result into the 'post' variable, because that's all we care about. Give it default value of 'undefined' in case the await fails.
-        const {rows: comment} = await db.query('SELECT * FROM comment WHERE post_id = $1 AND cid >= $2 LIMIT $3',[req.params.pid, start, limit])
+        const {rows: comment} = await db.query('SELECT * FROM comment WHERE post_id = $1',[req.params.pid])
             .catch((err) => { return next(createError(500, 'Error fetching comments from database')) }) || { rows: undefined };
         
         if(!comment || !comment.length) return next(createError(404));
         
-        //Return the post id too in case front-end needs to use it for something
         res.status(200).json({msg:'Found all comments', details: comment})
     })
 ];
