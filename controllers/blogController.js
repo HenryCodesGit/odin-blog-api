@@ -2,7 +2,7 @@
 const asyncHandler = require('express-async-handler');
 
 // checkLogin to validate user exists;
-const checkLogin = require('../middleware/checkLogin-middleware');
+const checkLogin = require('../middleware/checkLogin-middleware')
 
 // To validate form results
 const { body, query, param, validationResult } = require('express-validator');

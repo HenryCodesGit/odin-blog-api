@@ -16,6 +16,12 @@ const DB_NAME = process.env.POSTGRES_DB;
 const DB_URI = process.env.POSTGRES_URI;
 const SESSION_SECRET = process.env.SESSION_SECRET;
 
+const EXAMPLE = "HI"
+const TWOXAMPLE = "MAKING MORE CHANGES"
+const FINISHED_WORK = "WORK IF DONE"
+const NEW_STUFF = "NEW"
+const NEW_STUFF2 = "NEW"
+
 const express = require('express');
 const { rateLimit } = require('express-rate-limit')
 const createError = require('http-errors');
